@@ -5,6 +5,7 @@ This is a small program currently in development, to serve two purposes.  The fi
 
 Current features (1-10-17):
 Right now, all it does is take a game, as entered in a string, and separate it into frames (denoting strikes and spares), as well as calculate the score for each frame.
+There are two games hard-coded into the program.  Because bonus frames are not correctly configured, it treats the tenth frame (a spare) as a conventional spare, adding the next ball's score twice instead of once as it should.  I have not configured the spacing of the scores (e.g. two-digit and three-digit scores needing more/less space), so the alignment is very rough.
 
 Upcoming features in the near future:
 -Handling of bonus frames.  This program is in a very early version, but I have not set it to register those correctly yet.
