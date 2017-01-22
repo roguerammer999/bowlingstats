@@ -7,9 +7,15 @@ public class bowlingstats_prelim1
         bgame_v1 g2_2016_12_30 =
                 new bgame_v1("9-1-8-0-8-2-7-0-10-8-2-10-9-0-10-0-10-9");
         bgame_v1 g3_2016_12_30 = 
-                new bgame_v1("9-0-10-0-9-8-2-10-9-0-6-0-0-8-7-3-10-5");
+                new bgame_v1("9-0-10-0-9-8-2-10-9-0-6-0-0-8-7-3-10-5-0");
         bgame_v1 g4_2016_12_30 =
                 new bgame_v1("9-0-7-1-8-2-9-0-10-10-5-5-9-0-7-2-8-0");
+        bgame_v1 g5_2016_12_30 =
+                new bgame_v1("9-0-10-10-7-3-8-0-3-2-10-6-0-10-8-2-7");
+        bgame_v1 g6_2016_12_30 =
+                new bgame_v1("1-0-10-9-0-0-10-10-9-1-5-3-9-1-6-1-10-6-4");
+        bgame_v1 g7_2016_12_30 =
+                new bgame_v1("8-2-5-3-9-0-9-1-9-1-7-1-0-9-9-1-10-7-1");
     }
     
 }
@@ -46,7 +52,7 @@ class bgame_v1
     
     private class frame_v1
     {
-        String ball1, ball2;
+        String ball1, ball2, ball3;
         int score = 0;
     }    
     
@@ -64,20 +70,25 @@ class bgame_v1
         }
     }
     
+    
     private void framecreator()
     {
         frameCounter = -1;
         //"prevFrame" is the most recent ball on which the frame was changed.
         int prevFrame = -1;
-        for(int ballthrow=0; ballthrow<balls_str.length; ballthrow++)
+        int ballthrow = 0;
+        for(; ballthrow<balls_str.length; ballthrow++)
         {
             if (ballthrow - prevFrame == 1)
             {
                 frameCounter++;
+                if(frameCounter==9)
+                    break;
                 bg_frames[frameCounter] = new frame_v1();
                 if(frameCounter>0)
                 {
-                    bg_frames[frameCounter].score += bg_frames[frameCounter-1].score;
+                    bg_frames[frameCounter].score +=
+                            bg_frames[frameCounter-1].score;
                 }
                 if (balls[ballthrow] != 10)
                 {
@@ -119,22 +130,81 @@ class bgame_v1
             
             bg_frames[frameCounter].score += balls[ballthrow];
         }
+        tenthFrame(ballthrow);
     }
+    
+    //Far less convoluted to keep the tenth frame, which has different rules
+    //than the other nine, in its own method.
+    private void tenthFrame(int ballcounter)
+    {
+        int totalscore = 0;
+        bg_frames[9] = new frame_v1();
+        bg_frames[9].ball3 = " ";
+        if(balls[ballcounter]==10)
+        {
+            bg_frames[9].ball1 = "X";
+            
+            if(balls[ballcounter+1]==10)
+            {
+                bg_frames[9].ball2 = "X";
+                if(balls[ballcounter+2]==10)
+                    bg_frames[9].ball3 = "X";
+                else
+                    bg_frames[9].ball3 = Integer.toString(balls[ballcounter+2]);
+            }
+            else
+            {
+                bg_frames[9].ball2 = Integer.toString(balls[ballcounter+1]);
+                if(balls[ballcounter+1]+balls[ballcounter+2]==10)
+                    bg_frames[9].ball3 = "/";
+                else
+                    bg_frames[9].ball3 = Integer.toString(balls[ballcounter+2]);
+            }
+        }
+        else
+        {
+            bg_frames[9].ball1 = Integer.toString(balls[ballcounter]);
+            if(balls[ballcounter]+balls[ballcounter+1]==10)
+            {
+                bg_frames[9].ball2 = "/";
+                if(balls[ballcounter+2]==10)
+                    bg_frames[9].ball3 = "X";
+                else
+                    bg_frames[9].ball3 = Integer.toString(balls[ballcounter+2]);
+            }
+            else
+                bg_frames[9].ball2 = Integer.toString(balls[ballcounter+1]);
+        }
+        totalscore += balls[ballcounter];
+        totalscore += balls[ballcounter+1];
+        try
+        {
+            totalscore += balls[ballcounter+2];
+        }
+        catch(ArrayIndexOutOfBoundsException exc1)
+                {}
+        bg_frames[9].score = bg_frames[8].score + totalscore;
+    }
+    
     
     private void test_print()
     {
-        for(int counter = 0; counter<12; counter++)
+        for(int counter = 1; counter<10; counter++)
         {
-            if(bg_frames[counter] != null)
-            {
-                System.out.print(" " + bg_frames[counter].ball1 + " " +
-                            bg_frames[counter].ball2 + "  |  ");
-            }
-            else
-                ;
+            System.out.print("----"+ counter + "---|");
         }
-        System.out.println("");
-        for(int counter = 0; counter<12; counter++)
+        System.out.println("---10---|");
+        System.out.print("  ");
+        for(int counter = 0; counter<9; counter++)
+        {
+            System.out.print(" " + bg_frames[counter].ball1 + " " +
+                            bg_frames[counter].ball2 + "  |  ");
+        }
+        System.out.println(" " + bg_frames[9].ball1 + " " +
+                bg_frames[9].ball2 + " " + bg_frames[9].ball3 + "|");
+        System.out.print("  ");
+        
+        for(int counter = 0; counter<10; counter++)
         {
             String spacedel;
             if(bg_frames[counter] != null)
