@@ -16,6 +16,7 @@ public class bowlingstats_prelim1
                 new bgame_v1("1-0-10-9-0-0-10-10-9-1-5-3-9-1-6-1-10-6-4");
         bgame_v1 g7_2016_12_30 =
                 new bgame_v1("8-2-5-3-9-0-9-1-9-1-7-1-0-9-9-1-10-7-1");
+        new bowlingstats_display1();
     }
     
 }
@@ -194,15 +195,37 @@ class bgame_v1
             System.out.print("----"+ counter + "---|");
         }
         System.out.println("---10---|");
-        System.out.print("  ");
         for(int counter = 0; counter<9; counter++)
         {
-            System.out.print(" " + bg_frames[counter].ball1 + " " +
-                            bg_frames[counter].ball2 + "  |  ");
+            System.out.print("   " + bg_frames[counter].ball1 + " " +
+                            bg_frames[counter].ball2 + "  |");
         }
-        System.out.println(" " + bg_frames[9].ball1 + " " +
+        System.out.println("   " + bg_frames[9].ball1 + " " +
                 bg_frames[9].ball2 + " " + bg_frames[9].ball3 + "|");
-        System.out.print("  ");
+        
+        //This program has two outputs, one to console and one to the
+        //Swing Graphic User Interface.  The next ~15 lines create two arrays,
+        //one for ball scoring data and one for frame scores, based respectively
+        //on the ball1, ball2, ball3 fields and score fields.  These arrays
+        //are then passed to the GUI.
+        String[] frameData = new String[10];
+        for(int counter = 0; counter<9; counter++)
+        {
+            frameData[counter] = bg_frames[counter].ball1 + "   " +
+                    bg_frames[counter].ball2;
+                
+        }
+        frameData[9] = bg_frames[9].ball1 + "   " + bg_frames[9].ball2 + "   " +
+                bg_frames[9].ball3;
+        
+        int[] frameScore = new int[10];
+        for(int counter = 0; counter<10; counter++)
+        {
+            frameScore[counter] = bg_frames[counter].score;
+        }
+        bowlingstats_display1.addFrameScore(frameData, frameScore);
+                
+        
         
         for(int counter = 0; counter<10; counter++)
         {
@@ -210,12 +233,12 @@ class bgame_v1
             if(bg_frames[counter] != null)
             {
                 if(bg_frames[counter].score < 10)
-                    spacedel = "    ";
+                    spacedel = "      ";
                 else if(bg_frames[counter].score < 100)
-                    spacedel = "   ";
+                    spacedel = "     ";
                 else
-                    spacedel = "  ";
-                System.out.print(spacedel + bg_frames[counter].score + " |  ");
+                    spacedel = "    ";
+                System.out.print(spacedel + bg_frames[counter].score + " |");
             }
             else
                 ;
