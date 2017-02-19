@@ -19,6 +19,7 @@ Long-term upcoming changes:
 -Bar graphs showing pin distributions on the first throw (e.g. for a range of 50 throws, how many were strikes, how many were 9's, etc.)
 
 Revision history:
+
 2-17-17
 -Made a complete version 2 (in the works the last couple weeks).  It has a Java Swing GUI with frame and score data showing for each frame, as well as a selection area from which to select games.
 -Formatting of the display area to make it look nice.
