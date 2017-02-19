@@ -4,7 +4,7 @@ Development of a program to enter, save, and analyze bowling games.
 This is a small program currently in development.  Its first purpose is to give me a tool to check the progress of bowling (i.e. ten pin bowling), one of my hobbies.  Hopefully it is more efficient than a word processor or spreadsheet.  Its other purpose is for practicing programming, which I am trying to learn.  My main language at this time is Java, but I am concomitantly learning C#.
 
 
-Current features (2-17-17):
+Current features (2-18-17):
 It takes a game, entered as a string of ball data (e.g. 7 pins, 3 pins), and separates it into useful game data (strikes/spares, frames, scores).  Then a game can be selected, and its game data will be displayed.
 
 Short-term upcoming changes:
@@ -20,7 +20,7 @@ Long-term upcoming changes:
 
 Revision history:
 
-2-17-17
+2-18-17
 -Made a complete version 2 (in the works the last couple weeks).  It has a Java Swing GUI with frame and score data showing for each frame, as well as a selection area from which to select games.
 -Formatting of the display area to make it look nice.
 -Redid the code for breaking the raw data into game data.  It is slightly longer but much easier to follow.
