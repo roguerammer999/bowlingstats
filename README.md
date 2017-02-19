@@ -1,14 +1,13 @@
 # bowlingstats
 Development of a program to enter, save, and analyze bowling games.
 
-This is a small program currently in development, to serve two purposes.  The first purpose is to give me a tool to check the progress of bowling (i.e. ten pin bowling), one of my hobbies.  I used to do that on a word processor, and more recently, I have been using spreadsheets.  The second purpose is for practicing programming, which I am trying to learn.  My main language at this time is Java, but I am concomitantly learning C#.
+This is a small program currently in development.  Its first purpose is to give me a tool to check the progress of bowling (i.e. ten pin bowling), one of my hobbies.  Hopefully it is more efficient than a word processor or spreadsheet.  Its other purpose is for practicing programming, which I am trying to learn.  My main language at this time is Java, but I am concomitantly learning C#.
 
-Current features (1-23-17):
-Right now, all it does is take a game, as entered in a string, and separate it into frames (denoting strikes and spares), as well as calculate the score for each frame.  It then outputs the scores in roughly a bowling score format to console output and a simple Swing GUI output.
-The program has seven games hard-coded into it, rather than reading from a file as I intend to make it.
+
+Current features (2-17-17):
+It takes a game, entered as a string of ball data (e.g. 7 pins, 3 pins), and separates it into useful game data (strikes/spares, frames, scores).  Then a game can be selected, and its game data will be displayed.
 
 Short-term upcoming changes:
--Refining the GUI.  Currently, it is more or less a spreadsheet with no separator lines.
 -Logging of date information.
 -The ability to load past games from and save new games into a file.
 -Notating splits.
@@ -20,8 +19,14 @@ Long-term upcoming changes:
 -Bar graphs showing pin distributions on the first throw (e.g. for a range of 50 throws, how many were strikes, how many were 9's, etc.)
 
 Revision history:
+2-17-17
+-Made a complete version 2 (in the works the last couple weeks).  It has a Java Swing GUI with frame and score data showing for each frame, as well as a selection area from which to select games.
+-Formatting of the display area to make it look nice.
+-Redid the code for breaking the raw data into game data.  It is slightly longer but much easier to follow.
+-Set fonts for open and closed frames, also increasing the font size.
+
 1-23-17
--Added new class with Java Swing GUI for displaying frame count, frame data, and sore data.
+-Added new class with Java Swing GUI for displaying frame count, frame data, and score data.
 -Slight reformat of spacking to make console output more concise.
 
 1-21-17
