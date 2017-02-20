@@ -24,12 +24,15 @@ This is a small program currently in development.  Its first purpose is to give 
   - Formatting of the display area to make it look nice.
   - Redid the code for breaking the raw data into game data.  It is slightly longer but much easier to follow.
   - Set fonts for open and closed frames, also increasing the font size.
+  - [Output image](output_v2_170218.png)
 
 - 1-23-17
   - Added new class with Java Swing GUI for displaying frame count, frame data, and score data.
   - Slight reformat of spacking to make console output more concise.
+  - [Output image](output_v1_170123.png)
 
 - 1-21-17
   - Corrected handling of bonus frames.  Instead of showing bonus balls in separate frames, they are included in the tenth frame and correctly calculated.
   - Aesthetics- added frame count headers.
   - Hard-coded more games for diagnostic purposes.
+  - [Output image](output_oldconsole_170121.png)
