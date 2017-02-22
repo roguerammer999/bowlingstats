@@ -1,10 +1,10 @@
 ## bowlingstats: A program to enter, save, and analyze bowling games.
 
-This is a small program currently in development.  Its first purpose is to give me a tool to check the progress of bowling (i.e. ten pin bowling), one of my hobbies.  Hopefully it is more efficient than a word processor or spreadsheet.  Its other purpose is for practicing programming, which I am trying to learn.  My main language at this time is Java, but I am concomitantly learning C#.
+This is a small program currently in development.  It checks the progress of bowling, one of my hobbies, hopefully more efficiently than a word processor or spreadsheet, then can display statistics for one or more games.  I am also using it to learn and practice programming, and it is written in Java, currently my main language.
 
 
 ####Current features (2-18-17):
-- It takes a game, entered as a string of ball data (e.g. 7 pins, 3 pins), and separates it into useful game data (strikes/spares, frames, scores).  Then a game can be selected, and its game data will be displayed.
+- It takes a game, entered as a string of ball data (e.g. 7 pins, 3 pins), and separates it into useful game data (strikes/spares, frames, scores).  The string is simply numbers of pins separated by a dash (e.g. "7-2-10-8-1-9-1...").  Then a game can be selected, and its game data will be displayed.
 
 ####Short-term upcoming changes:
 - Logging of date information.
