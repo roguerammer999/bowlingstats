@@ -35,7 +35,6 @@ public class bowlingstats_prelim2 extends JFrame
     //depicting a frame: frameDataDisplay (ball data),
     //frameScoreDisplay (final score), as well as a title ("Frame #5").
     private static JPanel [] framePanel = new JPanel [10];
-    //private static JTextArea [] frameDataDisplay = new JTextArea [10];
     private static JTextArea [] frameDataDisplay = new JTextArea [10];
     private static JTextArea [] frameScoreDisplay = new JTextArea [10];
     
@@ -45,7 +44,7 @@ public class bowlingstats_prelim2 extends JFrame
     public bowlingstats_prelim2()
     {
         this.setLocation(400,300);
-        this.setSize(1050,230);
+        this.setSize(900,240);
         this.setTitle("Bowling Stats Display v.2");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -61,7 +60,9 @@ public class bowlingstats_prelim2 extends JFrame
             framePanel[counter].add(indivFrame);
             
             //First part of each frame is the frame # header.
-            indivFrame.add(new JLabel("Frame " + (counter + 1)));
+            JPanel fHeaderPanel = new JPanel();
+            fHeaderPanel.add(new JLabel("Frame " + (counter + 1)));
+            indivFrame.add(fHeaderPanel);
             indivFrame.add(indivFrame.createVerticalStrut(15));
             
             //Second part of each frame is ball data.
@@ -74,8 +75,8 @@ public class bowlingstats_prelim2 extends JFrame
             //Third part of each frame is the score for each frame.
             frameScoreDisplay[counter] = new JTextArea(3,4);
             frameScoreDisplay[counter].setEditable(false);
-            indivFrame.add(frameScoreDisplay[counter]);
             frameScoreDisplay[counter].setFont(fontDefault);
+            indivFrame.add(frameScoreDisplay[counter]);
             selectDisplay.add(indivFrame);
         }
         
@@ -83,8 +84,9 @@ public class bowlingstats_prelim2 extends JFrame
         gameNumbersList.setFixedCellWidth(100);
         gameNumbersList.setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION);
-        selectButton.addActionListener(new changeSelectedGame());        
+        selectButton.addActionListener(new changeSelectedGame());
         gameSelect.add(gameNumbersList);
+        gameNumbersList.setSelectedIndex(0);
         gameSelect.add(gameSelect.createVerticalStrut(15));
         gameSelect.add(this.selectButton);
         
@@ -108,9 +110,12 @@ public class bowlingstats_prelim2 extends JFrame
             
             //Closed frames (10 points or more in the frame) are set to bold
             if(inputGame.gameFrames[counter].closedFrame == true)
+            {
+                frameDataDisplay[counter].setBackground(new Color(210,255,210));
                 frameDataDisplay[counter].setFont(fontBold);
+            }
             else
-                frameDataDisplay[counter].setFont(fontDefault);
+                frameDataDisplay[counter].setBackground(Color.WHITE);
         }
         for(int counter = 0; counter < 10; counter++)
         {
