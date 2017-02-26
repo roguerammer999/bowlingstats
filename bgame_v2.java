@@ -109,15 +109,19 @@ public class bgame_v2
             this.gameFrames[9].ball1 = "X";
             this.gameFrames[9].closedFrame = true;
             if(finalBallData[ballCount + 1] == TENPINS) //Second ball strike
-                this.gameFrames[9].ball2 = "X";
-            else //2nd ball not a strike
             {
-                this.gameFrames[9].ball2 =
-                        Integer.toString(finalBallData[ballCount + 1]);
+                this.gameFrames[9].ball2 = "X";
                 if(finalBallData[ballCount + 2] == TENPINS) //Third ball strike
                     this.gameFrames[9].ball3 = "X";
                 else //3rd ball not a strike
                     this.gameFrames[9].ball3 =
+                            Integer.toString(finalBallData[ballCount + 2]);
+            }
+            else //2nd ball not a strike
+            {
+                this.gameFrames[9].ball2 =
+                        Integer.toString(finalBallData[ballCount + 1]);
+                this.gameFrames[9].ball3 =
                             Integer.toString(finalBallData[ballCount + 2]);
             }
             this.gameFrames[9].frameScore = this.gameFrames[8].frameScore +
