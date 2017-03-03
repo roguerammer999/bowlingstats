@@ -12,19 +12,22 @@ public class bgame_v2
         int frameScore;
     }
     
-    
-    frame_v2 gameFrames[] = new frame_v2 [10];
+    public String gameDate;
+    public String gameOrdinal;
+    public frame_v2 gameFrames[] = new frame_v2 [10];
     final int TENPINS = 10;
     
     
     public int [] rawData_Splitter(String rawBallData)
     {
-        String [] refinedBallData = rawBallData.split("-");
-        int [] finalBallData = new int[refinedBallData.length];        
-        for(int counter=0; counter<refinedBallData.length; counter++)
+        String [] refinedData = rawBallData.split("-");
+        int [] finalBallData = new int[refinedData.length - 2];
+        gameDate = refinedData[0];
+        gameOrdinal = refinedData[1];
+        for(int counter=0; counter<refinedData.length - 2; counter++)
         {
             finalBallData[counter] =
-                    Integer.parseInt(refinedBallData[counter]);
+                    Integer.parseInt(refinedData[counter+2]);
         }
         return finalBallData;
     }
@@ -33,7 +36,7 @@ public class bgame_v2
     {
         int finalBallData [] = rawData_Splitter(rawBallData);
         int ballCount = 0;
-                
+        
         //First nine frames
         for(int frameCount = 0; frameCount < 9; frameCount++)
         {
@@ -43,7 +46,7 @@ public class bgame_v2
             {
                 this.gameFrames[frameCount].closedFrame = true;
                 this.gameFrames[frameCount].ball1 = "X";
-                this.gameFrames[frameCount].ball2 = " ";
+                this.gameFrames[frameCount].ball2 = "";
                 if(frameCount==0)
                 {
                     this.gameFrames[0].frameScore = TENPINS +
@@ -60,7 +63,10 @@ public class bgame_v2
             
             else //Two balls in the frame
             {
-                this.gameFrames[frameCount].ball1 =
+                if(finalBallData[ballCount]==0)
+                    this.gameFrames[frameCount].ball1 = "-";
+                else
+                    this.gameFrames[frameCount].ball1 =
                         Integer.toString(finalBallData[ballCount]);
                 ballCount++;
                 
@@ -84,8 +90,12 @@ public class bgame_v2
                 //For an open frame (two balls total less than 10)
                 else
                 {
-                    this.gameFrames[frameCount].ball2 =
+                    if(finalBallData[ballCount] == 0 )
+                        this.gameFrames[frameCount].ball2 = "-";
+                    else
+                        this.gameFrames[frameCount].ball2 =
                             Integer.toString(finalBallData[ballCount]);
+                    
                     if(frameCount == 0)
                         this.gameFrames[0].frameScore =
                                 finalBallData[ballCount - 1] +
@@ -151,11 +161,12 @@ public class bgame_v2
             {
                 this.gameFrames[9].ball2 =
                         Integer.toString(finalBallData[ballCount + 1]);
-                this.gameFrames[9].ball3 = " ";
+                this.gameFrames[9].ball3 = "";
                 this.gameFrames[9].frameScore = this.gameFrames[8].frameScore +
                         finalBallData[ballCount] +
                         finalBallData[ballCount + 1];
             }
         }
-    }    
+            
+    }
 }
