@@ -20,6 +20,10 @@ This is a small program currently in development.  It checks the progress of bow
 
 
 ####Revision history:
+- 3-03-17
+  - Minor changes to bgame_v2 code only.  Zero-pin throws are now correctly recorded as dashes.  Reduced bgame_v2 from 173 lines to 163 lines; it is also easier to follow along.
+  - No change in output graphics (see 3-02-17 for latest output).
+  
 - 3-02-17
   - Revamped the whole visual interface to look more like a bowling scorecard.  It is more consistent, as well as much easier to read.  Numbers are in boxes instead of being separated by spaces.
   - Games now store date and ordinal (e.g. 3rd game of the day) data.  This is also displayed when a game is loaded.
