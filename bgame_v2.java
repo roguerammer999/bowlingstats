@@ -12,103 +12,90 @@ public class bgame_v2
         int frameScore;
     }
     
+    public frame_v2 gameFrames[] = new frame_v2 [10];
+    public int [] finalBallData;
     public String gameDate;
     public String gameOrdinal;
-    public frame_v2 gameFrames[] = new frame_v2 [10];
+    
     final int TENPINS = 10;
+    private int ballCount = 0;
     
+        
     
-    public int [] rawData_Splitter(String rawBallData)
+    //Small method to return number as a string, or a zero as a dash
+    private String scoreString(int ballScore)
     {
-        String [] refinedData = rawBallData.split("-");
-        int [] finalBallData = new int[refinedData.length - 2];
-        gameDate = refinedData[0];
-        gameOrdinal = refinedData[1];
-        for(int counter=0; counter<refinedData.length - 2; counter++)
-        {
-            finalBallData[counter] =
-                    Integer.parseInt(refinedData[counter+2]);
-        }
-        return finalBallData;
+        if(ballScore == 0)
+            return "-";
+        else
+            return Integer.toString(ballScore);
     }
+    
     
     public void createFrames(String rawBallData)
     {
-        int finalBallData [] = rawData_Splitter(rawBallData);
-        int ballCount = 0;
+        String [] splitData = rawBallData.split("-");
+        finalBallData = new int[splitData.length - 2];
+        gameDate = splitData[0];
+        gameOrdinal = splitData[1];
+        for(int counter = 0; counter < (splitData.length - 2); counter++)
+        {
+            finalBallData[counter] =
+                    Integer.parseInt(splitData[counter+2]);
+        }
+        
         
         //First nine frames
         for(int frameCount = 0; frameCount < 9; frameCount++)
         {
             this.gameFrames[frameCount] = new frame_v2();
-            this.gameFrames[frameCount].ball3 = "";
-            if (finalBallData[ballCount] == TENPINS) //A strike on first throw
+            if(finalBallData[ballCount] == TENPINS) //A strike
             {
                 this.gameFrames[frameCount].closedFrame = true;
                 this.gameFrames[frameCount].ball1 = "X";
                 this.gameFrames[frameCount].ball2 = "";
-                if(frameCount==0)
-                {
-                    this.gameFrames[0].frameScore = TENPINS +
-                            finalBallData[ballCount + 1] +
-                            finalBallData[ballCount + 2];
-                }
-                else
-                    this.gameFrames[frameCount].frameScore =
-                            this.gameFrames[frameCount - 1].frameScore + TENPINS +
-                            finalBallData[ballCount + 1] +
-                            finalBallData[ballCount + 2];
-                ballCount++;
+                this.gameFrames[frameCount].frameScore =
+                        TENPINS +
+                        finalBallData[ballCount + 1] +
+                        finalBallData[ballCount + 2];
+                if(frameCount != 0)
+                    this.gameFrames[frameCount].frameScore +=
+                            this.gameFrames[frameCount-1].frameScore;
+                ballCount += 1;
             }
-            
-            else //Two balls in the frame
+            else //Less than ten pins on first throw
             {
-                if(finalBallData[ballCount]==0)
-                    this.gameFrames[frameCount].ball1 = "-";
-                else
-                    this.gameFrames[frameCount].ball1 =
-                        Integer.toString(finalBallData[ballCount]);
-                ballCount++;
-                
-                //For a spare (two balls total 10)
-                if(finalBallData[ballCount - 1] +
-                        finalBallData[ballCount]==TENPINS)
+                this.gameFrames[frameCount].ball1 =
+                        scoreString(finalBallData[ballCount]);
+                if(finalBallData[ballCount] +
+                        finalBallData[ballCount + 1] == 10) //A spare
                 {
-                    this.gameFrames[frameCount].ball2 = "/";
                     this.gameFrames[frameCount].closedFrame = true;
-                    if(frameCount == 0)
-                        this.gameFrames[0].frameScore = TENPINS +
-                                finalBallData[ballCount + 1];
-                    else
-                        this.gameFrames[frameCount].frameScore =
-                                this.gameFrames[frameCount - 1].frameScore+ 
-                                TENPINS +
-                                finalBallData[ballCount + 1];
-                    ballCount++;
+                    this.gameFrames[frameCount].ball2 = "/";
+                    this.gameFrames[frameCount].frameScore =
+                            TENPINS +
+                            finalBallData[ballCount + 2];
+                    if(frameCount != 0)
+                        this.gameFrames[frameCount].frameScore +=
+                                this.gameFrames[frameCount-1].frameScore;
                 }
-                
-                //For an open frame (two balls total less than 10)
-                else
+                else //An open frame (less than ten pins for both throws total
                 {
-                    if(finalBallData[ballCount] == 0 )
-                        this.gameFrames[frameCount].ball2 = "-";
-                    else
-                        this.gameFrames[frameCount].ball2 =
-                            Integer.toString(finalBallData[ballCount]);
-                    
-                    if(frameCount == 0)
-                        this.gameFrames[0].frameScore =
-                                finalBallData[ballCount - 1] +
-                                finalBallData[ballCount];
-                    else
-                        this.gameFrames[frameCount].frameScore = 
-                                this.gameFrames[frameCount - 1].frameScore +
-                                finalBallData[ballCount - 1] +
-                                finalBallData[ballCount];
-                    ballCount++;
+                    this.gameFrames[frameCount].ball2 =
+                            scoreString(finalBallData[ballCount + 1]);
+                    this.gameFrames[frameCount].closedFrame = false;
+                    this.gameFrames[frameCount].frameScore =
+                            finalBallData[ballCount] +
+                            finalBallData[ballCount + 1];
+                    if(frameCount != 0)
+                        this.gameFrames[frameCount].frameScore +=
+                                this.gameFrames[frameCount-1].frameScore;
                 }
+                ballCount += 2;
             }
         }
+        //End first nine frames
+        
         
         //Tenth frame
         gameFrames[9] = new frame_v2();
@@ -125,14 +112,18 @@ public class bgame_v2
                     this.gameFrames[9].ball3 = "X";
                 else //3rd ball not a strike
                     this.gameFrames[9].ball3 =
-                            Integer.toString(finalBallData[ballCount + 2]);
+                            scoreString(finalBallData[ballCount + 2]);
             }
             else //2nd ball not a strike
             {
                 this.gameFrames[9].ball2 =
-                        Integer.toString(finalBallData[ballCount + 1]);
-                this.gameFrames[9].ball3 =
-                            Integer.toString(finalBallData[ballCount + 2]);
+                        scoreString(finalBallData[ballCount + 1]);
+                if(finalBallData[ballCount + 1] +finalBallData[ballCount + 2]
+                        == 10)
+                    this.gameFrames[9].ball3 = "/";
+                else
+                    this.gameFrames[9].ball3 =
+                            scoreString(finalBallData[ballCount + 2]);
             }
             this.gameFrames[9].frameScore = this.gameFrames[8].frameScore +
                         finalBallData[ballCount] +
@@ -144,14 +135,14 @@ public class bgame_v2
         else
         {
             this.gameFrames[9].ball1 =
-                    Integer.toString(finalBallData[ballCount]);
+                    scoreString(finalBallData[ballCount]);
             if(finalBallData[ballCount] +
                     finalBallData[ballCount + 1] == TENPINS)//Tenth frame spare
             {
                 this.gameFrames[9].ball2 = "/";
                 this.gameFrames[9].closedFrame = true;
                 this.gameFrames[9].ball3 =
-                        Integer.toString(finalBallData[ballCount + 2]);
+                        scoreString(finalBallData[ballCount + 2]);
                 this.gameFrames[9].frameScore = this.gameFrames[8].frameScore +
                         finalBallData[ballCount] +
                         finalBallData[ballCount + 1] +
@@ -160,13 +151,13 @@ public class bgame_v2
             else //Tenth frame open (less than ten pins)
             {
                 this.gameFrames[9].ball2 =
-                        Integer.toString(finalBallData[ballCount + 1]);
+                        scoreString(finalBallData[ballCount + 1]);
                 this.gameFrames[9].ball3 = "";
                 this.gameFrames[9].frameScore = this.gameFrames[8].frameScore +
                         finalBallData[ballCount] +
                         finalBallData[ballCount + 1];
             }
         }
-            
+        //End tenth frame
     }
 }
