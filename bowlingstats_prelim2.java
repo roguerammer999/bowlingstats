@@ -2,32 +2,43 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.NumberFormat;
 
 public class bowlingstats_prelim2 extends JFrame
 {
     public static void main(String [] args)
     {
+        String rawGames =
+                "05/04/2012-1-9-1-1-8-1-6-5-0-10-9-1-9-1-10-10-8-0\n"
+                + "05/04/2012-2-0-7-7-3-10-8-0-5-2-9-1-3-6-7-0-5-2-10-6-2\n"
+                + "12/30/2016-1-4-6-7-1-7-1-1-7-9-1-8-0-7-0-0-10-10-9-0\n"
+                + "12/30/2016-2-9-1-8-0-8-2-7-0-10-8-2-10-9-0-10-0-10-9\n"
+                + "12/30/2016-3-9-0-10-0-9-8-2-10-9-0-6-0-0-8-7-3-10-5-0\n"
+                + "12/30/2016-4-9-0-7-1-8-2-9-0-10-10-5-5-9-0-7-2-8-0\n"
+                + "12/30/2016-5-9-0-10-10-7-3-8-0-3-2-10-6-0-10-8-2-7\n"
+                + "12/30/2016-6-1-0-10-9-0-0-10-10-9-1-5-3-9-1-6-1-10-6-4\n"
+                + "12/30/2016-7-8-2-5-3-9-0-9-1-9-1-7-1-0-9-9-1-10-7-1\n";
+        String allGamesBase [] = rawGames.split("\n");        
+        gamesStorage = new bgame_v2[allGamesBase.length];
+        
+        for(int counter = 0; counter<allGamesBase.length; counter++)
+        {
+            addGame(new bgame_v2(allGamesBase[counter]));
+        }
+        
         new bowlingstats_prelim2();
-        addGame(new bgame_v2(
-                "12/30/2016-1-4-6-7-1-7-1-1-7-9-1-8-0-7-0-0-10-10-9-0"));
-        addGame(new bgame_v2(
-                "12/30/2016-2-9-1-8-0-8-2-7-0-10-8-2-10-9-0-10-0-10-9"));
-        addGame(new bgame_v2(
-                "12/30/2016-3-9-0-10-0-9-8-2-10-9-0-6-0-0-8-7-3-10-5-0"));
-        addGame(new bgame_v2(
-                "12/30/2016-4-9-0-7-1-8-2-9-0-10-10-5-5-9-0-7-2-8-0"));
-        addGame(new bgame_v2(
-                "12/30/2016-5-9-0-10-10-7-3-8-0-3-2-10-6-0-10-8-2-7"));
-        addGame(new bgame_v2(
-                "12/30/2016-6-1-0-10-9-0-0-10-10-9-1-5-3-9-1-6-1-10-6-4"));
-        addGame(new bgame_v2(
-                "12/30/2016-7-8-2-5-3-9-0-9-1-9-1-7-1-0-9-9-1-10-7-1"));
     }
     
-    //Array "gamesStorage []" is the storage for each of the seven games.
-    //At this point, this will need to be changed when there are more games.
-    public static bgame_v2 gamesStorage [] = new bgame_v2 [7];
-    public static int gamesCount = 0;
+        //Method for adding a new game
+    private static void addGame(bgame_v2 newGame)
+    {
+        gamesStorage[gamesCount] = newGame;
+        gamesCount++;
+    }
+    
+    //Array "gamesStorage []" is the storage for each of the games.
+    private static bgame_v2 gamesStorage [];
+    private static int gamesCount = 0;
     
     //JPanel mainDisplay has the game data, while selectDisplay is the
     //area for selecting each game
@@ -37,12 +48,11 @@ public class bowlingstats_prelim2 extends JFrame
     private static JPanel selectDisplay = new JPanel();
     private static Box gameSelect = Box.createVerticalBox();
     private static JButton selectButton = new JButton("Display score");
-    private static String [] gameNumbers = {"Game 1", "Game 2", "Game 3",
-        "Game 4", "Game 5", "Game 6", "Game 7"};
-    private static JList gameNumbersList= new JList(gameNumbers);
     
     private static JTextField gameDateDisplay;
     private static JTextField gameOrdinalDisplay;
+    private static NumberFormat gameCountFormat =
+            NumberFormat.getNumberInstance();
     
     //framePanel is an array of 10 JPanels, each one containing components
     //depicting a frame: frameDataDisplay (ball data),
@@ -54,10 +64,18 @@ public class bowlingstats_prelim2 extends JFrame
     private static JTextField blankFrame10;
     
     
-    
     private static Font fontDefault = new Font("Sans Serif", Font.PLAIN, 22);
     private static Font fontScore = new Font("Sans Serif", Font.BOLD, 28);
     private static Font fontBold = new Font("Sans Serif", Font.BOLD, 22);
+    private static Border lineBlack =
+            BorderFactory.createLineBorder(Color.BLACK);
+    
+    
+    //These fields are used for the list for selection of game.
+    private static String [] gameNumbers;
+    private static JList gameNumbersList;
+    private static JScrollPane gNLScroll;
+    
     
     public bowlingstats_prelim2()
     {
@@ -86,8 +104,7 @@ public class bowlingstats_prelim2 extends JFrame
         //This section adds the frame data to the frame display boxes.
         for(int counter = 0; counter < 10; counter++)
         {
-            Border lineBlack = BorderFactory.createLineBorder(Color.BLACK);
-            
+            JLabel frameHeader = new JLabel("Frame #" + (counter + 1));
             
             framePanel[counter] = new JPanel();
             framePanel[counter].setLayout(new BorderLayout());
@@ -95,7 +112,7 @@ public class bowlingstats_prelim2 extends JFrame
             JPanel framePanelTop = new JPanel();
             framePanelTop.setLayout(new GridLayout(0,3));
             
-            if(counter==9)
+            if(counter==9)//Tenth frame only
             {
                 blankFrame10 = new JTextField();
                 blankFrame10.setEditable(false);
@@ -111,52 +128,73 @@ public class bowlingstats_prelim2 extends JFrame
                 framePanelTop.add(blankField);
             }
             
-            frameBall1[counter] = new JTextField(1);
-            frameBall1[counter].setEditable(false);
-            frameBall1[counter].setFont(fontDefault);
-            frameBall1[counter].setBorder(lineBlack);
-            frameBall1[counter].setBackground(Color.WHITE);
+            frameBall1[counter] = createScorePanel(1, fontDefault);
             framePanelTop.add(frameBall1[counter]);
-            
-            frameBall2[counter] = new JTextField(1);
-            frameBall2[counter].setEditable(false);
-            frameBall2[counter].setFont(fontDefault);
-            frameBall2[counter].setBorder(lineBlack);
-            frameBall2[counter].setBackground(Color.WHITE);
+            frameBall2[counter] = createScorePanel(1, fontDefault);
             framePanelTop.add(frameBall2[counter]);
             
-            frameScore[counter] = new JTextField(2);
-            frameScore[counter].setEditable(false);
-            frameScore[counter].setFont(fontScore);
-            frameScore[counter].setBackground(Color.WHITE);
+            frameScore[counter] = createScorePanel(2, fontScore);
+            
+            framePanel[counter].add(frameHeader, BorderLayout.NORTH);
             framePanel[counter].add(framePanelTop, BorderLayout.CENTER);
             framePanel[counter].add(frameScore[counter], BorderLayout.SOUTH);
             selectDisplay.add(framePanel[counter]);
         }
         
+        
+        //This creates a String array based on the number of games stored,
+        //then it is converted to a JList.
         mainDisplay.add(gameSelect);
+        gameNumbers = new String [gamesStorage.length];
+        for(int counter = 1; counter <= gamesStorage.length; counter++)
+        {
+            gameNumbers[counter - 1] = "Game " + counter;
+        }
+        gameNumbersList = new JList(gameNumbers);
+        gameNumbersList.setVisibleRowCount(7);
         gameNumbersList.setFixedCellWidth(100);
         gameNumbersList.setSelectionMode(
                 ListSelectionModel.SINGLE_SELECTION);
+        gameNumbersList.setFixedCellWidth(100);
+        gameNumbersList.setSelectionMode(
+                ListSelectionModel.SINGLE_SELECTION);
+        gNLScroll = new JScrollPane(gameNumbersList,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         selectButton.addActionListener(new changeSelectedGame());
-        gameSelect.add(gameNumbersList);
+        gameSelect.add(gNLScroll);
+        
+        
         gameNumbersList.setSelectedIndex(0);
-        gameSelect.add(gameSelect.createVerticalStrut(15));
         gameSelect.add(this.selectButton);
         
         this.setVisible(true);
     }
     
-    public static void addGame(bgame_v2 newGame)
+    
+    //Method for creating a JTextField.  This is used in the
+    //selectDisplay JPanel, which contains the game data of the selected game.
+    private static JTextField createScorePanel(int width, Font fontSelection)
     {
-        gamesStorage[gamesCount] = newGame;
-        gamesCount++;
+        JTextField newScoreField = new JTextField(width);
+        newScoreField.setEditable(false);
+        newScoreField.setFont(fontSelection);
+        newScoreField.setBorder(lineBlack);
+        newScoreField.setBackground(Color.WHITE);
+        return newScoreField;
     }
     
-    public static void showFrameScore(bgame_v2 inputGame)
+    public static void showFrameScore(int inputOrdinal)
     {
-        gameDateDisplay.setText(inputGame.gameDate);
-        gameOrdinalDisplay.setText("Game #" + inputGame.gameOrdinal);
+        bgame_v2 inputGame = gamesStorage[inputOrdinal];
+        gameCountFormat.setMinimumIntegerDigits(4);
+        gameCountFormat.setGroupingUsed(false);
+        gameDateDisplay.setText(inputGame.gameDate +
+                "  Game #" + inputGame.gameOrdinal);
+        gameOrdinalDisplay.setText("Game " +
+                gameCountFormat.format(inputOrdinal + 1));
+        
+        //First nine frames only
         for(int counter = 0; counter < 9; counter++)
         {
             frameBall1[counter].setText(inputGame.gameFrames[counter].ball1);
@@ -180,6 +218,8 @@ public class bowlingstats_prelim2 extends JFrame
             frameScore[counter].setText(
                     Integer.toString(inputGame.gameFrames[counter].frameScore));
         }
+        
+        //Tenth frame only
         blankFrame10.setText(inputGame.gameFrames[9].ball1);
         frameBall1[9].setText(inputGame.gameFrames[9].ball2);
         frameBall2[9].setText(inputGame.gameFrames[9].ball3);
@@ -215,10 +255,8 @@ public class bowlingstats_prelim2 extends JFrame
         {
             if (gameSel.getSource() == selectButton)
             {
-                String gameNumber = gameNumbersList.getSelectedValue().
-                        toString();
-                int numberselect = Integer.parseInt(gameNumber.substring(5));
-                showFrameScore(gamesStorage[numberselect - 1]);
+                int gameNumber = gameNumbersList.getSelectedIndex();
+                showFrameScore(gameNumber);
             }
         }
     }
