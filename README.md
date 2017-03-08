@@ -2,13 +2,16 @@
 
 This is a small program currently in development.  It checks the progress of bowling, one of my hobbies, hopefully more efficiently than a word processor or spreadsheet, then can display statistics for one or more games.  I am also using it to learn and practice programming, and it is written in Java, currently my main language.
 
+NOTE: The only relevant files right now are:
+- **[bgame_v2.java](bgame_v2.java)** and
+- **[bowlingstats_prelim2.java](bowlingstats_prelim2.java)**
+Other source files pertain to the earlier version.
 
-####Current features (3-02-17):
-- It takes a game, entered as a string of ball data (e.g. 7 pins, 3 pins), and separates it into useful game data (strikes/spares, frames, scores).  The string is simply numbers of pins separated by a dash (e.g. "7-2-10-8-1-9-1...").  Before the pins are numbers denoting the date and the ordinal (e.g. 3rd game of that day), and both of these are displayed also.  Then a game can be selected, and its game data will be displayed.  Closed frames are displayed with bold font and shaded slightly green.
+####Current features (3-07-17):
+- It takes a String of all games, listed with date, ordinal (e.g. 3rd game of that day), and ball data (e.g. 7 pins, 3 pins) and separates it into individual games, then separates the games into game data with strikes/spares, frame, scores, date, and ordinal.  A game can be selected, and its game data will be displayed.  Closed frames are displayed with bold font and shaded slightly green.
 
 ####Short-term upcoming changes:
-- Need to clean up the code, add back in the frame-number headers, and set tenth frame 0's to dashes.
-- The ability to select multiple games to view
+- The ability to select multiple games to view at once
 - The ability to load past games from and save new games into a file.
 - Notating splits.
 
@@ -20,6 +23,15 @@ This is a small program currently in development.  It checks the progress of bow
 
 
 ####Revision history:
+- 3-07-17
+  - Combined input Strings into a single input String to mimic a text file.  A future change will draw directly from a text file.
+  - Added two games to test the ordinals feature, e.g. 1st game of 12/30/2016 is 3rd game overall, and it shows both numbers.
+  - Added "Frame #" headers back in.
+  - Added scroll bar to accommodate it having 9 games instead of 7 games.
+  - Added ordinals feature.  The last version showed which ordinal for that day, but it now shows both ordinals for that day as well as overall.  The overall ordinals is number formatted to four digits (e.g. "0001" for the first game).
+  - Set code to get indices/indexes instead of a crude workaround that pulled numbers that just *corresponded to* the correct index.
+  - [Output image](output_v2_170307.png)
+
 - 3-03-17
   - Minor changes to bgame_v2 code only.  Zero-pin throws are now correctly recorded as dashes.  Reduced bgame_v2 from 173 lines to 163 lines; it is also easier to follow along.
   - No change in output graphics (see 3-02-17 for latest output).
