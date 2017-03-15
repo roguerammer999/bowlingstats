@@ -18,7 +18,7 @@ public class bowlingstats_prelim2 extends JFrame
                 + "12/30/2016-5-9-0-10-10-7-3-8-0-3-2-10-6-0-10-8-2-7\n"
                 + "12/30/2016-6-1-0-10-9-0-0-10-10-9-1-5-3-9-1-6-1-10-6-4\n"
                 + "12/30/2016-7-8-2-5-3-9-0-9-1-9-1-7-1-0-9-9-1-10-7-1\n";
-        String allGamesBase [] = rawGames.split("\n");        
+        String allGamesBase [] = rawGames.split("\n");
         gamesStorage = new bgame_v2[allGamesBase.length];
         
         for(int counter = 0; counter<allGamesBase.length; counter++)
@@ -45,7 +45,6 @@ public class bowlingstats_prelim2 extends JFrame
     private static JPanel mainDisplay = new JPanel();
     private static Box mainDataDisplay = Box.createVerticalBox();
     private static Box metaData = Box.createHorizontalBox();
-    private static JPanel selectDisplay = new JPanel();
     private static Box gameSelect = Box.createVerticalBox();
     private static JButton selectButton = new JButton("Display score");
     
@@ -61,12 +60,12 @@ public class bowlingstats_prelim2 extends JFrame
     private static JTextField [] frameBall1 = new JTextField[10];
     private static JTextField [] frameBall2 = new JTextField[10];
     private static JTextField [] frameScore = new JTextField[10];
-    private static JTextField blankFrame10;
     
     
     private static Font fontDefault = new Font("Sans Serif", Font.PLAIN, 22);
     private static Font fontScore = new Font("Sans Serif", Font.BOLD, 28);
     private static Font fontBold = new Font("Sans Serif", Font.BOLD, 22);
+    private static Color closedFrameGreen = new Color (210,255,210);
     private static Border lineBlack =
             BorderFactory.createLineBorder(Color.BLACK);
     
@@ -80,184 +79,206 @@ public class bowlingstats_prelim2 extends JFrame
     public bowlingstats_prelim2()
     {
         this.setLocation(400,300);
-        this.setSize(900,240);
+        this.setSize(1040,480);
         this.setTitle("Bowling Stats Display v.2");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         this.add(mainDisplay);
+        
+        
         mainDataDisplay.add(metaData);
-        mainDataDisplay.add(selectDisplay);
+        mainDataDisplay.setMinimumSize(new Dimension(720,160));
+        mainDataDisplay.setMaximumSize(new Dimension(720,400));
         mainDisplay.add(mainDataDisplay);
-        selectDisplay.setLayout(new GridLayout(0,10,5,5));
-        
-        //This section adds the date of the game and the ordinal (e.g.
-        //the third game of the day).
-        gameDateDisplay = new JTextField("");
-        gameDateDisplay.setEditable(false);
-        gameDateDisplay.setFont(fontScore);
-        gameOrdinalDisplay = new JTextField("");
-        gameOrdinalDisplay.setEditable(false);
-        gameOrdinalDisplay.setFont(fontScore);
-        metaData.add(gameDateDisplay);
-        metaData.add(gameOrdinalDisplay);
-        
-        //This section adds the frame data to the frame display boxes.
-        for(int counter = 0; counter < 10; counter++)
-        {
-            JLabel frameHeader = new JLabel("Frame #" + (counter + 1));
-            
-            framePanel[counter] = new JPanel();
-            framePanel[counter].setLayout(new BorderLayout());
-            framePanel[counter].setBorder(lineBlack);
-            JPanel framePanelTop = new JPanel();
-            framePanelTop.setLayout(new GridLayout(0,3));
-            
-            if(counter==9)//Tenth frame only
-            {
-                blankFrame10 = new JTextField();
-                blankFrame10.setEditable(false);
-                blankFrame10.setFont(fontDefault);
-                blankFrame10.setBorder(lineBlack);
-                blankFrame10.setBackground(Color.WHITE);
-                framePanelTop.add(blankFrame10);
-            }
-            else
-            {
-                JTextField blankField = new JTextField();
-                blankField.setEditable(false);
-                framePanelTop.add(blankField);
-            }
-            
-            frameBall1[counter] = createScorePanel(1, fontDefault);
-            framePanelTop.add(frameBall1[counter]);
-            frameBall2[counter] = createScorePanel(1, fontDefault);
-            framePanelTop.add(frameBall2[counter]);
-            
-            frameScore[counter] = createScorePanel(2, fontScore);
-            
-            framePanel[counter].add(frameHeader, BorderLayout.NORTH);
-            framePanel[counter].add(framePanelTop, BorderLayout.CENTER);
-            framePanel[counter].add(frameScore[counter], BorderLayout.SOUTH);
-            selectDisplay.add(framePanel[counter]);
-        }
         
         
         //This creates a String array based on the number of games stored,
         //then it is converted to a JList.
-        mainDisplay.add(gameSelect);
+        gameSelect.setAlignmentX(Box.TOP_ALIGNMENT);
         gameNumbers = new String [gamesStorage.length];
+        gameCountFormat.setMinimumIntegerDigits(4);
+        gameCountFormat.setGroupingUsed(false);
         for(int counter = 1; counter <= gamesStorage.length; counter++)
         {
-            gameNumbers[counter - 1] = "Game " + counter;
+            gameNumbers[counter - 1] = "Game " + gameCountFormat.format(counter)
+                    + "      " +
+                    gamesStorage[counter - 1].gameDate + " Game #" +
+                    gamesStorage[counter - 1].gameOrdinal;
         }
         gameNumbersList = new JList(gameNumbers);
         gameNumbersList.setVisibleRowCount(7);
         gameNumbersList.setFixedCellWidth(100);
         gameNumbersList.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
-        gameNumbersList.setFixedCellWidth(100);
-        gameNumbersList.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION);
+                ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         gNLScroll = new JScrollPane(gameNumbersList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        selectButton.addActionListener(new changeSelectedGame());
+        gNLScroll.setPreferredSize(new Dimension(215,130));
+        selectButton.addActionListener(gameSel ->
+        {
+            if (gameSel.getSource() == selectButton)
+            {
+                int gameNumber = gameNumbersList.getSelectedIndex();
+                int [] gameNumbers = gameNumbersList.getSelectedIndices();
+                mainDataDisplay.removeAll();
+                mainDataDisplay.add(showFrameScore(gameNumbers));
+            }
+            bowlingstats_prelim2.this.setVisible(true);
+        }
+        );
         gameSelect.add(gNLScroll);
+        gameSelect.add(Box.createVerticalGlue());
         
         
         gameNumbersList.setSelectedIndex(0);
         gameSelect.add(this.selectButton);
-        
+        mainDisplay.add(gameSelect);
         this.setVisible(true);
     }
     
     
-    //Method for creating a JTextField.  This is used in the
+    //Helper method for creating a JTextField.  This is used in the
     //selectDisplay JPanel, which contains the game data of the selected game.
-    private static JTextField createScorePanel(int width, Font fontSelection)
+    private static JTextField createScorePanel
+        (int width, Font fontSelection, String ballScore)
     {
         JTextField newScoreField = new JTextField(width);
         newScoreField.setEditable(false);
         newScoreField.setFont(fontSelection);
         newScoreField.setBorder(lineBlack);
         newScoreField.setBackground(Color.WHITE);
+        newScoreField.setText(ballScore);
         return newScoreField;
     }
     
-    public static void showFrameScore(int inputOrdinal)
+    
+    public static JScrollPane showFrameScore (int [] gameSelection)
     {
-        bgame_v2 inputGame = gamesStorage[inputOrdinal];
+        Box mainPanel = Box.createVerticalBox();
+        JScrollPane mainScroll = new JScrollPane(mainPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
         gameCountFormat.setMinimumIntegerDigits(4);
         gameCountFormat.setGroupingUsed(false);
-        gameDateDisplay.setText(inputGame.gameDate +
-                "  Game #" + inputGame.gameOrdinal);
-        gameOrdinalDisplay.setText("Game " +
-                gameCountFormat.format(inputOrdinal + 1));
         
-        //First nine frames only
-        for(int counter = 0; counter < 9; counter++)
+        for(int gct : gameSelection)
         {
-            frameBall1[counter].setText(inputGame.gameFrames[counter].ball1);
-            frameBall2[counter].setText(inputGame.gameFrames[counter].ball2);
-            if(inputGame.gameFrames[counter].closedFrame)
+            //Converting the respective selected game to a new one
+            //to make access easier.
+            bgame_v2 gameIn = gamesStorage[gct];
+            
+            JTextField gameOrdinalDisplay =
+                    new JTextField("Game " +
+                                    gameCountFormat.format(gct + 1) );
+            gameOrdinalDisplay.setEditable(false);
+            gameOrdinalDisplay.setFont(fontScore);
+            JTextField gameDateDisplay =
+                    new JTextField(gameIn.gameDate + "   Game #" +
+                            gameIn.gameOrdinal);
+            gameDateDisplay.setEditable(false);
+            gameDateDisplay.setFont(fontScore);
+            gameDateDisplay.setPreferredSize(
+                    new Dimension(150, gameOrdinalDisplay.getHeight()));
+            
+            Box metaData = Box.createHorizontalBox();
+            metaData.add(gameOrdinalDisplay);
+            metaData.add(gameDateDisplay);
+            
+            JPanel framePanel = new JPanel();
+            framePanel.setLayout(new GridLayout (0,10,5,5));
+            JPanel fPanel[] = new JPanel [10];
+            
+            for(int fct = 0; fct < 10; fct++)
             {
-                frameBall1[counter].setFont(fontBold);
-                frameBall1[counter].setBackground(new Color(210,255,210));
-                frameBall2[counter].setFont(fontBold);
-                frameBall2[counter].setBackground(new Color(210,255,210));
-                frameScore[counter].setBackground(new Color(210,255,210));
+                JLabel frameHeader = new JLabel("Frame #" + (fct + 1));
+                fPanel[fct] = new JPanel();
+                fPanel[fct].setLayout(new BorderLayout());
+                fPanel[fct].setBorder(lineBlack);
+                JPanel framePanelTop = new JPanel();
+                framePanelTop.setLayout(new GridLayout(0,3));
+                
+                
+                if(fct==9)//Tenth frame only
+                {
+                    JTextField blankFrame10 = createScorePanel(1,
+                            fontDefault, gameIn.gameFrames[fct].ball1);
+                    JTextField frameBall1 = createScorePanel(1,
+                            fontDefault, gameIn.gameFrames[fct].ball2);
+                    JTextField frameBall2 = createScorePanel(1,
+                            fontDefault, gameIn.gameFrames[fct].ball3);
+                    framePanelTop.add(blankFrame10);
+                    framePanelTop.add(frameBall1);
+                    framePanelTop.add(frameBall2);
+                    if(gameIn.gameFrames[fct].closedFrame)
+                    {
+                        blankFrame10.setFont(fontBold);
+                        blankFrame10.setBackground(closedFrameGreen);
+                        frameBall1.setFont(fontBold);
+                        frameBall1.setBackground(closedFrameGreen);
+                        frameBall2.setFont(fontBold);
+                        frameBall2.setBackground(closedFrameGreen);
+                    }
+                }
+                else//First nine frames
+                {
+                    JTextField blankField = new JTextField();
+                    blankField.setEditable(false);
+                    framePanelTop.add(blankField);
+                    JTextField frameBall1 = createScorePanel(1,
+                            fontDefault, gameIn.gameFrames[fct].ball1);
+                    JTextField frameBall2 = createScorePanel(1,
+                            fontDefault, gameIn.gameFrames[fct].ball2);
+                    framePanelTop.add(frameBall1);
+                    framePanelTop.add(frameBall2);
+                    if(gameIn.gameFrames[fct].closedFrame)
+                    {
+                        frameBall1.setFont(fontBold);
+                        frameBall1.setBackground(closedFrameGreen);
+                        frameBall2.setFont(fontBold);
+                        frameBall2.setBackground(closedFrameGreen);
+                    }
+                }
+                
+                JTextField frameScore = createScorePanel(2,fontScore,
+                        Integer.toString(gameIn.gameFrames[fct].frameScore));
+                if(gameIn.gameFrames[fct].closedFrame)
+                {
+                    frameScore.setBackground(closedFrameGreen);
+                }
+                
+                fPanel[fct].add(frameHeader, BorderLayout.NORTH);
+                fPanel[fct].add(framePanelTop, BorderLayout.CENTER);
+                fPanel[fct].add(frameScore, BorderLayout.SOUTH);
+                
+                framePanel.add(fPanel[fct]);
             }
-            else
-            {
-                frameBall1[counter].setFont(fontDefault);
-                frameBall1[counter].setBackground(Color.WHITE);
-                frameBall2[counter].setFont(fontDefault);
-                frameBall2[counter].setBackground(Color.WHITE);
-                frameScore[counter].setBackground(Color.WHITE);
-            }
-            frameScore[counter].setText(
-                    Integer.toString(inputGame.gameFrames[counter].frameScore));
+            
+            Box gamePanel = Box.createVerticalBox();
+            
+            gamePanel.setMaximumSize(new Dimension(700,130));
+            gamePanel.add(metaData);
+            gamePanel.add(framePanel);
+            
+            mainPanel.add(gamePanel);
         }
         
-        //Tenth frame only
-        blankFrame10.setText(inputGame.gameFrames[9].ball1);
-        frameBall1[9].setText(inputGame.gameFrames[9].ball2);
-        frameBall2[9].setText(inputGame.gameFrames[9].ball3);
-        frameScore[9].setText(
-                Integer.toString(inputGame.gameFrames[9].frameScore));
-        if(inputGame.gameFrames[9].closedFrame)
-        {
-            blankFrame10.setFont(fontBold);
-            blankFrame10.setBackground(new Color(210,255,210));
-            frameBall1[9].setFont(fontBold);
-            frameBall1[9].setBackground(new Color(210,255,210));
-            frameBall2[9].setFont(fontBold);
-            frameBall2[9].setBackground(new Color(210,255,210));
-            frameScore[9].setBackground(new Color(210,255,210));
-        }
-        else
-        {
-            blankFrame10.setFont(fontDefault);
-            blankFrame10.setBackground(Color.WHITE);
-            frameBall1[9].setFont(fontDefault);
-            frameBall1[9].setBackground(Color.WHITE);
-            frameBall2[9].setFont(fontDefault);
-            frameBall2[9].setBackground(Color.WHITE);
-            frameScore[9].setBackground(Color.WHITE);
-        }
-    }
-
-    //The ActionListener is for the "Display score" button.  When pressed,
-    //the button loads the selected game into the display
-    public class changeSelectedGame implements ActionListener
-    {
-        public void actionPerformed (ActionEvent gameSel)
-        {
-            if (gameSel.getSource() == selectButton)
-            {
-                int gameNumber = gameNumbersList.getSelectedIndex();
-                showFrameScore(gameNumber);
-            }
-        }
+        //This section adds the date of the game and the ordinal (e.g.
+        //the third game of the day).
+        gameOrdinalDisplay = new JTextField("");
+        gameOrdinalDisplay.setEditable(false);
+        gameOrdinalDisplay.setFont(fontScore);
+        gameDateDisplay = new JTextField("");
+        gameDateDisplay.setEditable(false);
+        gameDateDisplay.setFont(fontScore);
+        gameDateDisplay.setPreferredSize(
+                new Dimension(150, gameOrdinalDisplay.getHeight()));
+        metaData.add(gameOrdinalDisplay);
+        metaData.add(gameDateDisplay);
+        
+        mainScroll.setMinimumSize(new Dimension(720,160));
+        mainScroll.setMaximumSize(new Dimension(720,400));
+        
+        return mainScroll;
     }
 }
