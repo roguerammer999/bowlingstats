@@ -2,27 +2,31 @@
 
 This is a small program currently in development.  It checks the progress of bowling, one of my hobbies, hopefully more efficiently than a word processor or spreadsheet, then can display statistics for one or more games.  I am also using it to learn and practice programming, and it is written in Java, currently my main language.
 
-NOTE: The only relevant files right now are:
+NOTE: These are the only relevant source files.  Other source files pertain to the earlier version:
 - **[bgame_v2.java](bgame_v2.java)** and
 - **[bowlingstats_prelim2.java](bowlingstats_prelim2.java)**
-Other source files pertain to the earlier version.
 
-####Current features (3-07-17):
-- It takes a String of all games, listed with date, ordinal (e.g. 3rd game of that day), and ball data (e.g. 7 pins, 3 pins) and separates it into individual games, then separates the games into game data with strikes/spares, frame, scores, date, and ordinal.  A game can be selected, and its game data will be displayed.  Closed frames are displayed with bold font and shaded slightly green.
+#### Current features (3-14-17):
+- It takes a String of all games, listed with date, ordinal (e.g. 3rd game of that day), and ball data (e.g. 7 pins, 3 pins) and separates it into individual games, then separates the games into game data with strikes/spares, frame, scores, date, and ordinal.  One or more games can be selected to display.  Closed frames are displayed with bold font and shaded slightly green.
+- [Output image](output_v2_170314.png)
 
-####Short-term upcoming changes:
-- The ability to select multiple games to view at once
+#### Short-term upcoming changes:
+- Basic statistics and analytics.
 - The ability to load past games from and save new games into a file.
 - Notating splits.
 
-####Long-term upcoming changes:
+#### Long-term upcoming changes:
 - Calculating averages over a selectable number of games or date range
 - Listing top scores per frame (e.g. best scores as of the 5th frame)
 - Calculating averages of pins knocked for a selectable range
 - Bar graphs showing pin distributions on the first throw (e.g. for a range of 50 throws, how many were strikes, how many were 9's, etc.)
 
 
-####Revision history:
+#### Revision history:
+- 3-14-17
+  - Major overhaul- changed display from one game only to being able to view multiple selected games at once.  The games are now shown in a window with a scroll bar.
+  - [Output image](output_v2_170314.png)
+
 - 3-07-17
   - Combined input Strings into a single input String to mimic a text file.  A future change will draw directly from a text file.
   - Added two games to test the ordinals feature, e.g. 1st game of 12/30/2016 is 3rd game overall, and it shows both numbers.
