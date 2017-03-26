@@ -62,6 +62,15 @@ public class bowlingstats_prelim2 extends JFrame
     private static JTextField [] frameScore = new JTextField[10];
     
     
+    //These three arrays show some statistics for a particular frame,
+    //e.g. 3rd frame.  They are highs (highest score for that frame), lows,
+    //and averages.  AverageSum uses 10x2 array; the reason for the 2 is that
+    //one row represents the score sum while the other is the number of games.
+    //It will be divided to calculate the average.
+    private static int [] frameHighs = new int[10];
+    private static double [][] frameAverageSum = new double [10][2];
+    private static int [] frameLows = new int[10];
+    
     private static Font fontDefault = new Font("Sans Serif", Font.PLAIN, 22);
     private static Font fontScore = new Font("Sans Serif", Font.BOLD, 28);
     private static Font fontBold = new Font("Sans Serif", Font.BOLD, 22);
@@ -87,14 +96,13 @@ public class bowlingstats_prelim2 extends JFrame
         
         
         mainDataDisplay.add(metaData);
-        mainDataDisplay.setMinimumSize(new Dimension(720,160));
-        mainDataDisplay.setMaximumSize(new Dimension(720,400));
+        mainDataDisplay.setPreferredSize(new Dimension(720,400));
         mainDisplay.add(mainDataDisplay);
         
         
         //This creates a String array based on the number of games stored,
         //then it is converted to a JList.
-        gameSelect.setAlignmentX(Box.TOP_ALIGNMENT);
+        gameSelect.setAlignmentY(Box.TOP_ALIGNMENT);
         gameNumbers = new String [gamesStorage.length];
         gameCountFormat.setMinimumIntegerDigits(4);
         gameCountFormat.setGroupingUsed(false);
@@ -113,7 +121,7 @@ public class bowlingstats_prelim2 extends JFrame
         gNLScroll = new JScrollPane(gameNumbersList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        gNLScroll.setPreferredSize(new Dimension(215,130));
+        gNLScroll.setPreferredSize(new Dimension(225,220));
         selectButton.addActionListener(gameSel ->
         {
             if (gameSel.getSource() == selectButton)
@@ -127,6 +135,8 @@ public class bowlingstats_prelim2 extends JFrame
         }
         );
         gameSelect.add(gNLScroll);
+        
+        
         gameSelect.add(Box.createVerticalGlue());
         
         
@@ -151,7 +161,6 @@ public class bowlingstats_prelim2 extends JFrame
         return newScoreField;
     }
     
-    
     public static JScrollPane showFrameScore (int [] gameSelection)
     {
         Box mainPanel = Box.createVerticalBox();
@@ -161,6 +170,8 @@ public class bowlingstats_prelim2 extends JFrame
         
         gameCountFormat.setMinimumIntegerDigits(4);
         gameCountFormat.setGroupingUsed(false);
+        
+        resetStats();
         
         for(int gct : gameSelection)
         {
@@ -186,7 +197,7 @@ public class bowlingstats_prelim2 extends JFrame
             metaData.add(gameDateDisplay);
             
             JPanel framePanel = new JPanel();
-            framePanel.setLayout(new GridLayout (0,10,5,5));
+            framePanel.setLayout(new GridLayout (1,10,5,5));
             JPanel fPanel[] = new JPanel [10];
             
             for(int fct = 0; fct < 10; fct++)
@@ -240,6 +251,16 @@ public class bowlingstats_prelim2 extends JFrame
                     }
                 }
                 
+                //This is where the stats are created/calculated.
+                if (frameHighs[fct] < gameIn.gameFrames[fct].frameScore)
+                    frameHighs[fct] = gameIn.gameFrames[fct].frameScore;
+                if (frameLows[fct] > gameIn.gameFrames[fct].frameScore
+                        || frameLows[fct] == 0)
+                    frameLows[fct] = gameIn.gameFrames[fct].frameScore;
+                frameAverageSum[fct][0] += gameIn.gameFrames[fct].frameScore;
+                frameAverageSum[fct][1]++;
+                
+                
                 JTextField frameScore = createScorePanel(2,fontScore,
                         Integer.toString(gameIn.gameFrames[fct].frameScore));
                 if(gameIn.gameFrames[fct].closedFrame)
@@ -275,10 +296,60 @@ public class bowlingstats_prelim2 extends JFrame
                 new Dimension(150, gameOrdinalDisplay.getHeight()));
         metaData.add(gameOrdinalDisplay);
         metaData.add(gameDateDisplay);
-        
-        mainScroll.setMinimumSize(new Dimension(720,160));
-        mainScroll.setMaximumSize(new Dimension(720,400));
+        mainPanel.add(showStats());
         
         return mainScroll;
+    }
+    
+    
+    private static void resetStats()
+    {
+        for(int ct = 0; ct < 10; ct++)
+        {
+            frameHighs[ct] = 0;
+            frameAverageSum[ct][0] = 0;
+            frameAverageSum[ct][1] = 0;
+            frameLows[ct] = 0;
+        }
+    }
+    
+    
+    public static Box showStats()
+    {
+        NumberFormat avgFormat = NumberFormat.getNumberInstance();
+        avgFormat.setMaximumFractionDigits(2);
+        
+        Box statsDisp = Box.createHorizontalBox();
+        statsDisp.setPreferredSize(new Dimension(700,150));
+        statsDisp.setMaximumSize(new Dimension(700,150));
+        for(int ct = 0; ct <10; ct++)
+        {
+            Box frameContainer = Box.createVerticalBox();
+            frameContainer.add(new JLabel("Fr. " + (ct+1)));
+            
+            JPanel frameColumn = new JPanel();
+            frameColumn.setLayout(new GridLayout(3,2,5,5));
+            
+            frameColumn.add(new JLabel("High"));
+            frameColumn.add(new JTextArea(
+                    Integer.toString(frameHighs[ct])
+            ));
+            
+            frameColumn.add(new JLabel("Avg"));
+            frameColumn.add(new JTextArea(avgFormat.format(
+                    frameAverageSum[ct][0] / frameAverageSum[ct][1]
+                    )
+            ));
+            
+            frameColumn.add(new JLabel("Low"));
+            frameColumn.add(new JTextArea(
+                    Integer.toString(frameLows[ct])
+            ));
+            
+            frameContainer.add(frameColumn);
+            statsDisp.add(frameContainer);
+        }
+        
+        return statsDisp;
     }
 }
