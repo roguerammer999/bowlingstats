@@ -1,7 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.text.NumberFormat;
 
 public class bowlingstats_prelim2 extends JFrame
@@ -11,47 +10,41 @@ public class bowlingstats_prelim2 extends JFrame
         String rawGames =
                 "05/04/2012-1-9-1-1-8-1-6-5-0-10-9-1-9-1-10-10-8-0\n"
                 + "05/04/2012-2-0-7-7-3-10-8-0-5-2-9-1-3-6-7-0-5-2-10-6-2\n"
-                + "12/30/2016-1-4-6-7-1-7-1-1-7-9-1-8-0-7-0-0-10-10-9-0\n"
+                + "12/30/2016-1-4-6-7P-1-7-1-1-7-9-1-8-0-7P-0-0-10-10-9-0\n"
                 + "12/30/2016-2-9-1-8-0-8-2-7-0-10-8-2-10-9-0-10-0-10-9\n"
                 + "12/30/2016-3-9-0-10-0-9-8-2-10-9-0-6-0-0-8-7-3-10-5-0\n"
-                + "12/30/2016-4-9-0-7-1-8-2-9-0-10-10-5-5-9-0-7-2-8-0\n"
+                + "12/30/2016-4-9-0-7-1-8P-2-9-0-10-10-6-4-8-1-7-2-8-0\n"
                 + "12/30/2016-5-9-0-10-10-7-3-8-0-3-2-10-6-0-10-8-2-7\n"
                 + "12/30/2016-6-1-0-10-9-0-0-10-10-9-1-5-3-9-1-6-1-10-6-4\n"
                 + "12/30/2016-7-8-2-5-3-9-0-9-1-9-1-7-1-0-9-9-1-10-7-1\n";
-        String allGamesBase [] = rawGames.split("\n");
-        gamesStorage = new bgame_v2[allGamesBase.length];
-        
-        for(int counter = 0; counter<allGamesBase.length; counter++)
-        {
-            addGame(new bgame_v2(allGamesBase[counter]));
-        }
+        gamesBaseAll = rawGames.split("\n");
+        addAllGames();
         
         new bowlingstats_prelim2();
     }
     
-        //Method for adding a new game
-    private static void addGame(bgame_v2 newGame)
+    
+    //String array "gamesBaseAll" is the storage of raw String data for all games.
+    //Array "gamesStorageAll []" is the storage for all of the games after they
+    //are converted to bgame_v2.
+    private static String [] gamesBaseAll;
+    private static bgame_v2 [] gamesStorageAll;
+    private static void addAllGames()
     {
-        gamesStorage[gamesCount] = newGame;
-        gamesCount++;
+        int ctmax = gamesBaseAll.length;
+        gamesStorageAll = new bgame_v2[ctmax];
+        for(int ct = 0; ct<ctmax; ct++)
+        {
+            gamesStorageAll[ct] = new bgame_v2(gamesBaseAll[ct]);
+        }
     }
     
-    //Array "gamesStorage []" is the storage for each of the games.
-    private static bgame_v2 gamesStorage [];
-    private static int gamesCount = 0;
     
     //JPanel mainDisplay has the game data, while selectDisplay is the
     //area for selecting each game
     private static JPanel mainDisplay = new JPanel();
     private static Box mainDataDisplay = Box.createVerticalBox();
     private static Box metaData = Box.createHorizontalBox();
-    private static Box gameSelect = Box.createVerticalBox();
-    private static JButton selectButton = new JButton("Display score");
-    
-    private static JTextField gameDateDisplay;
-    private static JTextField gameOrdinalDisplay;
-    private static NumberFormat gameCountFormat =
-            NumberFormat.getNumberInstance();
     
     //framePanel is an array of 10 JPanels, each one containing components
     //depicting a frame: frameDataDisplay (ball data),
@@ -60,6 +53,16 @@ public class bowlingstats_prelim2 extends JFrame
     private static JTextField [] frameBall1 = new JTextField[10];
     private static JTextField [] frameBall2 = new JTextField[10];
     private static JTextField [] frameScore = new JTextField[10];
+    
+    
+    private static Box gameSelect = Box.createVerticalBox();
+    private static JButton selectButton = new JButton("Display score");
+    //These fields are used for the list for selection of game.
+    private static String [] gameNumbers;
+    private static JList gameNumbersList;
+    private static JScrollPane gNLScroll;
+    
+    
     
     
     //These three arrays show some statistics for a particular frame,
@@ -71,18 +74,15 @@ public class bowlingstats_prelim2 extends JFrame
     private static double [][] frameAverageSum = new double [10][2];
     private static int [] frameLows = new int[10];
     
+    private static NumberFormat gameCountFormat =
+            NumberFormat.getNumberInstance();
     private static Font fontDefault = new Font("Sans Serif", Font.PLAIN, 22);
     private static Font fontScore = new Font("Sans Serif", Font.BOLD, 28);
     private static Font fontBold = new Font("Sans Serif", Font.BOLD, 22);
     private static Color closedFrameGreen = new Color (210,255,210);
+    private static Color splitRed = new Color (255,210,210);
     private static Border lineBlack =
             BorderFactory.createLineBorder(Color.BLACK);
-    
-    
-    //These fields are used for the list for selection of game.
-    private static String [] gameNumbers;
-    private static JList gameNumbersList;
-    private static JScrollPane gNLScroll;
     
     
     public bowlingstats_prelim2()
@@ -103,15 +103,15 @@ public class bowlingstats_prelim2 extends JFrame
         //This creates a String array based on the number of games stored,
         //then it is converted to a JList.
         gameSelect.setAlignmentY(Box.TOP_ALIGNMENT);
-        gameNumbers = new String [gamesStorage.length];
+        gameNumbers = new String [gamesStorageAll.length];
         gameCountFormat.setMinimumIntegerDigits(4);
         gameCountFormat.setGroupingUsed(false);
-        for(int counter = 1; counter <= gamesStorage.length; counter++)
+        for(int counter = 1; counter <= gamesStorageAll.length; counter++)
         {
             gameNumbers[counter - 1] = "Game " + gameCountFormat.format(counter)
                     + "      " +
-                    gamesStorage[counter - 1].gameDate + " Game #" +
-                    gamesStorage[counter - 1].gameOrdinal;
+                    gamesStorageAll[counter - 1].gameDate + " Game #" +
+                    gamesStorageAll[counter - 1].gameOrdinal;
         }
         gameNumbersList = new JList(gameNumbers);
         gameNumbersList.setVisibleRowCount(7);
@@ -129,25 +129,25 @@ public class bowlingstats_prelim2 extends JFrame
                 int gameNumber = gameNumbersList.getSelectedIndex();
                 int [] gameNumbers = gameNumbersList.getSelectedIndices();
                 mainDataDisplay.removeAll();
-                mainDataDisplay.add(showFrameScore(gameNumbers));
+                mainDataDisplay.add(
+                        showFrameScore(gameNumbers));
             }
             bowlingstats_prelim2.this.setVisible(true);
         }
         );
         gameSelect.add(gNLScroll);
         
-        
         gameSelect.add(Box.createVerticalGlue());
-        
         
         gameNumbersList.setSelectedIndex(0);
         gameSelect.add(this.selectButton);
         mainDisplay.add(gameSelect);
+        
         this.setVisible(true);
     }
     
     
-    //Helper method for creating a JTextField.  This is used in the
+    //Helper method for creating a JTextField.  This is frequently used in the
     //selectDisplay JPanel, which contains the game data of the selected game.
     private static JTextField createScorePanel
         (int width, Font fontSelection, String ballScore)
@@ -176,8 +176,8 @@ public class bowlingstats_prelim2 extends JFrame
         for(int gct : gameSelection)
         {
             //Converting the respective selected game to a new one
-            //to make access easier.
-            bgame_v2 gameIn = gamesStorage[gct];
+            //to make access easier to read/type.
+            bgame_v2 gameIn = gamesStorageAll[gct];
             
             JTextField gameOrdinalDisplay =
                     new JTextField("Game " +
@@ -230,6 +230,10 @@ public class bowlingstats_prelim2 extends JFrame
                         frameBall2.setFont(fontBold);
                         frameBall2.setBackground(closedFrameGreen);
                     }
+                    else
+                        frameBall2.setBackground(Color.LIGHT_GRAY);
+                    if(gameIn.gameFrames[fct].isSplit)
+                        frameBall1.setBackground(splitRed);
                 }
                 else//First nine frames
                 {
@@ -249,6 +253,8 @@ public class bowlingstats_prelim2 extends JFrame
                         frameBall2.setFont(fontBold);
                         frameBall2.setBackground(closedFrameGreen);
                     }
+                    if(gameIn.gameFrames[fct].isSplit)
+                        frameBall1.setBackground(splitRed);
                 }
                 
                 //This is where the stats are created/calculated.
@@ -264,9 +270,7 @@ public class bowlingstats_prelim2 extends JFrame
                 JTextField frameScore = createScorePanel(2,fontScore,
                         Integer.toString(gameIn.gameFrames[fct].frameScore));
                 if(gameIn.gameFrames[fct].closedFrame)
-                {
                     frameScore.setBackground(closedFrameGreen);
-                }
                 
                 fPanel[fct].add(frameHeader, BorderLayout.NORTH);
                 fPanel[fct].add(framePanelTop, BorderLayout.CENTER);
@@ -286,10 +290,10 @@ public class bowlingstats_prelim2 extends JFrame
         
         //This section adds the date of the game and the ordinal (e.g.
         //the third game of the day).
-        gameOrdinalDisplay = new JTextField("");
+        JTextField gameOrdinalDisplay = new JTextField("");
         gameOrdinalDisplay.setEditable(false);
         gameOrdinalDisplay.setFont(fontScore);
-        gameDateDisplay = new JTextField("");
+        JTextField gameDateDisplay = new JTextField("");
         gameDateDisplay.setEditable(false);
         gameDateDisplay.setFont(fontScore);
         gameDateDisplay.setPreferredSize(
@@ -331,20 +335,15 @@ public class bowlingstats_prelim2 extends JFrame
             frameColumn.setLayout(new GridLayout(3,2,5,5));
             
             frameColumn.add(new JLabel("High"));
-            frameColumn.add(new JTextArea(
-                    Integer.toString(frameHighs[ct])
-            ));
+            frameColumn.add(new JTextArea( Integer.toString(frameHighs[ct]) ));
             
             frameColumn.add(new JLabel("Avg"));
-            frameColumn.add(new JTextArea(avgFormat.format(
-                    frameAverageSum[ct][0] / frameAverageSum[ct][1]
-                    )
+            frameColumn.add(new JTextArea(avgFormat.format
+        (frameAverageSum[ct][0] / frameAverageSum[ct][1])
             ));
             
             frameColumn.add(new JLabel("Low"));
-            frameColumn.add(new JTextArea(
-                    Integer.toString(frameLows[ct])
-            ));
+            frameColumn.add(new JTextArea( Integer.toString(frameLows[ct]) ));
             
             frameContainer.add(frameColumn);
             statsDisp.add(frameContainer);
