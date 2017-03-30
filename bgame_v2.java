@@ -8,19 +8,17 @@ public class bgame_v2
     public class frame_v2
     {
         public String ball1, ball2, ball3;
+        public Boolean isSplit = false;
         boolean closedFrame;
         int frameScore;
     }
     
     public frame_v2 gameFrames[] = new frame_v2 [10];
-    public int [] finalBallData;
     public String gameDate;
     public String gameOrdinal;
     
     final int TENPINS = 10;
     private int ballCount = 0;
-    
-        
     
     //Small method to return number as a string, or a zero as a dash
     private String scoreString(int ballScore)
@@ -35,13 +33,23 @@ public class bgame_v2
     public void createFrames(String rawBallData)
     {
         String [] splitData = rawBallData.split("-");
-        finalBallData = new int[splitData.length - 2];
+        int [] finalBallData = new int[splitData.length - 2];
+        Boolean [] finalSplitData = new Boolean[splitData.length - 2];
         gameDate = splitData[0];
         gameOrdinal = splitData[1];
         for(int counter = 0; counter < (splitData.length - 2); counter++)
         {
-            finalBallData[counter] =
-                    Integer.parseInt(splitData[counter+2]);
+            if(splitData[counter+2].endsWith("P"))
+            {
+                finalBallData[counter] =
+                        Integer.parseInt(splitData[counter+2].substring(0,1));
+                finalSplitData[counter] = true;
+            }
+            else
+            {
+                finalBallData[counter] = Integer.parseInt(splitData[counter+2]);
+                finalSplitData[counter] = false;
+            }
         }
         
         
@@ -65,10 +73,15 @@ public class bgame_v2
             }
             else //Less than ten pins on first throw
             {
-                this.gameFrames[frameCount].ball1 =
-                        scoreString(finalBallData[ballCount]);
-                if(finalBallData[ballCount] +
-                        finalBallData[ballCount + 1] == 10) //A spare
+                //Quick definitions of qBall1 being the first ball for the
+                //frame and qBall2 being the second ball.
+                int qBall1 = finalBallData[ballCount];
+                int qBall2 = finalBallData[ballCount + 1];
+                this.gameFrames[frameCount].ball1 = scoreString(qBall1);
+                //Determination of split
+                if(finalSplitData[ballCount])
+                    this.gameFrames[frameCount].isSplit = true;
+                if(qBall1 + qBall2 == 10) //A spare
                 {
                     this.gameFrames[frameCount].closedFrame = true;
                     this.gameFrames[frameCount].ball2 = "/";
@@ -82,11 +95,10 @@ public class bgame_v2
                 else //An open frame (less than ten pins for both throws total
                 {
                     this.gameFrames[frameCount].ball2 =
-                            scoreString(finalBallData[ballCount + 1]);
+                            scoreString(qBall2);
                     this.gameFrames[frameCount].closedFrame = false;
                     this.gameFrames[frameCount].frameScore =
-                            finalBallData[ballCount] +
-                            finalBallData[ballCount + 1];
+                            qBall1 + qBall2;
                     if(frameCount != 0)
                         this.gameFrames[frameCount].frameScore +=
                                 this.gameFrames[frameCount-1].frameScore;
