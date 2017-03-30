@@ -6,15 +6,14 @@ NOTE: These are the only relevant source files.  Other source files pertain to t
 - **[bgame_v2.java](bgame_v2.java)** and
 - **[bowlingstats_prelim2.java](bowlingstats_prelim2.java)**
 
-#### Current features (3-26-17):
-- It takes a String of all games, listed with date, ordinal (e.g. 3rd game of that day), and ball data (e.g. 7 pins, 3 pins) and separates it into individual games, then separates the games into game data with strikes/spares, frame, scores, date, and ordinal.  One or more games can be selected to display.  Closed frames are displayed with bold font and shaded slightly green.
+#### Current features (3-29-17):
+- It takes a String of all games, listed with date, ordinal (e.g. 3rd game of that day), and ball data (e.g. 7 pins, 3 pins) and separates it into individual games, then separates the games into game data with strikes/spares, frame, scores, date, and ordinal.  One or more games can be selected to display.  Closed frames are displayed with bold font and shaded slightly green, while splits are shaded pink.
 - Displays frame-by-frame data for a given selection.  This consists of highest frame score, lowest frame score, and average for that selection.
-- [Output image](output_v2_170326.PNG)
+- [Output image](output_v2_170329.png)
 
 #### Short-term upcoming changes:
-- Code needs to be cleaned up (as of 3-26-17).
+- Code needs to be cleaned up (as of 3-29-17).
 - The ability to load past games from and save new games into a file.
-- Notating splits.
 - SQL storage of games.
 
 #### Long-term upcoming changes:
@@ -25,6 +24,10 @@ NOTE: These are the only relevant source files.  Other source files pertain to t
 
 
 #### Revision history:
+- 3-29-17
+  - Added distinction of splits.  A raw ball marked "P" denotes a split, and this is displayed in a text field shaded pink.
+  - [Output image](output_v2_170329.png)
+
 - 3-26-17
   - Added statistics.  Program now displays highs, lows, and averages for each respective frame.  (Data for frame 10 is data for the actual games, since frame 10 has the games' final scores.)
   - [Output image](output_v2_170326.PNG)
