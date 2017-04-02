@@ -6,13 +6,13 @@ NOTE: These are the only relevant source files.  Other source files pertain to t
 - **[bgame_v2.java](bgame_v2.java)** and
 - **[bowlingstats_prelim2.java](bowlingstats_prelim2.java)**
 
-#### Current features (3-29-17):
+#### Current features (4-02-17):
 - It takes a String of all games, listed with date, ordinal (e.g. 3rd game of that day), and ball data (e.g. 7 pins, 3 pins) and separates it into individual games, then separates the games into game data with strikes/spares, frame, scores, date, and ordinal.  One or more games can be selected to display.  Closed frames are displayed with bold font and shaded slightly green, while splits are shaded pink.
 - Displays frame-by-frame data for a given selection.  This consists of highest frame score, lowest frame score, and average for that selection.
-- [Output image](output_v2_170329.png)
+- [Output image](output_v2_170402.png)
 
 #### Short-term upcoming changes:
-- Code needs to be cleaned up (as of 3-29-17).
+- A "view all" button to simply see all of the games.
 - The ability to load past games from and save new games into a file.
 - SQL storage of games.
 
@@ -24,6 +24,11 @@ NOTE: These are the only relevant source files.  Other source files pertain to t
 
 
 #### Revision history:
+- 4-02-17
+  - Improvements to the display- bigger font for the statistics, separation buffer space for games.
+  - Cleaning up of code- removing redundancies and obsolete fields, making comments more clear.
+  - [Output image](output_v2_170402.png)
+
 - 3-29-17
   - Added distinction of splits.  A raw ball marked "P" denotes a split, and this is displayed in a text field shaded pink.
   - [Output image](output_v2_170329.png)
